@@ -1,3 +1,4 @@
+import 'package:cash_tab/components/bottom_navigation.dart';
 import 'package:cash_tab/components/home_currency_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,6 +22,8 @@ class HomeViewState extends ConsumerState<HomeView> {
     const rate1 = 0.011;
     const rate2 = 165.16;
 
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -32,10 +35,25 @@ class HomeViewState extends ConsumerState<HomeView> {
                 horizontal: 24,
                 vertical: 24,
               ),
-              child: Text(
-                'USD / RUB / IDR',
-                style: Theme.of(context).textTheme.headlineMedium,
-                textAlign: TextAlign.left,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'USD / RUB / IDR',
+                      style: theme.textTheme.headlineSmall,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  IconButton(
+                    // TODO: Add this setup to favorites
+                    onPressed: () => {},
+                    icon: Icon(
+                      // TODO: Favorites flag
+                      true ? Icons.bookmark : Icons.bookmark_outline,
+                      color: theme.colorScheme.primary,
+                    ),
+                  )
+                ],
               ),
             ),
             // Add your scrollable content here
@@ -48,18 +66,21 @@ class HomeViewState extends ConsumerState<HomeView> {
                 children: const [
                   HomeCurrencyInputWidget(
                     currency: 'USD',
+                    index: 0,
                   ),
                   SizedBox(
                     height: 16,
                   ),
                   HomeCurrencyInputWidget(
                     currency: 'IDR',
+                    index: 1,
                   ),
                   SizedBox(
                     height: 16,
                   ),
                   HomeCurrencyInputWidget(
                     currency: 'RUB',
+                    index: 2,
                   ),
                 ],
               ),
@@ -135,28 +156,6 @@ class HomeViewState extends ConsumerState<HomeView> {
             // Add more widgets as needed
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Account',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark),
-            label: 'Saved',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.language),
-            label: 'Language',
-          ),
-        ],
-        currentIndex: 0,
-        onTap: (index) => {},
       ),
     );
   }

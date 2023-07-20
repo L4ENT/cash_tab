@@ -1,0 +1,10 @@
+{
+    "home": "home",
+    "favorites": "favorites",
+    "account": "account",
+    "language": "language",
+    "curreny_search_placeholder": "enter name or symbol",
+    "enter_amount_placeholder": "enter amount",
+    "sort_recents": "recents",
+    "sort_az": "A-Z"
+}

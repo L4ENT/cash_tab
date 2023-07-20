@@ -1,0 +1,10 @@
+{
+    "home": "главная",
+    "favorites": "избранное",
+    "account": "аккаунт",
+    "language": "язык",
+    "curreny_search_placeholder": "введите название или код",
+    "enter_amount_placeholder": "введите количество",
+    "sort_recents": "недавние",
+    "sort_az": "по алфавиту"
+}

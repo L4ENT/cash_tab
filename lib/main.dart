@@ -1,19 +1,68 @@
+import 'package:cash_tab/views/bottom_navigation_view.dart';
+import 'package:cash_tab/views/currency_search_view.dart';
+import 'package:cash_tab/views/favorites_view.dart';
 import 'package:cash_tab/views/home_view.dart';
+import 'package:cash_tab/views/languages_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 var uuidLib = const Uuid();
 
+final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> _shellNavigatorKey =
+    GlobalKey<NavigatorState>();
+
 final GoRouter _router = GoRouter(
+  navigatorKey: _rootNavigatorKey,
+  initialLocation: '/',
   routes: <RouteBase>[
+    ShellRoute(
+      navigatorKey: _shellNavigatorKey,
+      pageBuilder: (context, state, child) {
+        return NoTransitionPage(
+          child: BottomNavigationView(
+            child: child,
+          ),
+        );
+      },
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (BuildContext context, GoRouterState state) {
+            return HomeView(
+              title: AppLocalizations.of(context)!.home,
+            );
+          },
+        ),
+        GoRoute(
+          path: '/favorites',
+          builder: (BuildContext context, GoRouterState state) {
+            return FavoritesView(
+              title: AppLocalizations.of(context)!.favorites,
+            );
+          },
+        ),
+        GoRoute(
+          path: '/languages',
+          builder: (BuildContext context, GoRouterState state) {
+            return LanguagesView(
+              title: AppLocalizations.of(context)!.language,
+            );
+          },
+        ),
+      ],
+    ),
     GoRoute(
-      path: '/',
+      parentNavigatorKey: _rootNavigatorKey,
+      path: '/currency/select/:index',
       builder: (BuildContext context, GoRouterState state) {
-        return const HomeView(
-          title: 'Dashboard',
+        int index = int.parse(state.pathParameters['index'] ?? '0');
+        return CurrencySelectView(
+          index: index,
         );
       },
     ),
@@ -42,9 +91,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Cash Tab',
+      title: 'CashTab',
       routerConfig: _router,
       theme: customTheme,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }
