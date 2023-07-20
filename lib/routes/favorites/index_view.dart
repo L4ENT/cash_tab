@@ -1,8 +1,10 @@
+
 import 'package:cash_tab/components/favorites_search_input.dart';
 import 'package:cash_tab/components/favorites_sort_dropdown.dart';
 import 'package:cash_tab/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class FavoritesView extends ConsumerStatefulWidget {
   const FavoritesView({super.key, required this.title});
@@ -16,6 +18,8 @@ class FavoritesView extends ConsumerStatefulWidget {
 class FavoritesViewState extends ConsumerState<FavoritesView> {
   @override
   Widget build(BuildContext context) {
+    final router = GoRouter.of(context);
+
     return Scaffold(
       appBar: AppBar(title: Text(widget.title.capitalize())),
       body: Padding(
@@ -54,7 +58,7 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
                             onTap: () => {
                               // TODO: Navigate to home view
                               // 1. Change state of home View (list of currencies)
-                              // 2. Go router
+                              router.go('/')
                             },
                           )
                         ],

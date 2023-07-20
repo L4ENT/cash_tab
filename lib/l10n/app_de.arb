@@ -1,0 +1,13 @@
+{
+    "home": "startseite",
+    "rates": "kurse",
+    "favorites": "Favoriten",
+    "account": "konto",
+    "settings": "einstellungen",
+    "language": "sprache",
+    "currency_search_placeholder": "namen oder code eingeben",
+    "enter_amount_placeholder": "menge eingeben",
+    "sort_recents": "neueste",
+    "sort_az": "A-Z sortieren",
+    "enter_the_value": "wert eingeben"
+}

@@ -12,14 +12,11 @@ class AppNavigation extends StatelessWidget {
       case '/':
         index = 0;
         break;
-      case '/account':
+      case '/favorites':
         index = 1;
         break;
-      case '/favorites':
+      case '/settings':
         index = 2;
-        break;
-      case '/languages':
-        index = 3;
         break;
       default:
     }
@@ -33,13 +30,10 @@ class AppNavigation extends StatelessWidget {
         location = '/';
         break;
       case 1:
-        location = '/account';
-        break;
-      case 2:
         location = '/favorites';
         break;
-      case 3:
-        location = '/languages';
+      case 2:
+        location = '/settings';
         break;
       default:
     }
@@ -67,20 +61,16 @@ class AppNavigation extends StatelessWidget {
     return BottomNavigationBar(
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: const Icon(Icons.home),
-          label: l10n.home.capitalize(),
-        ),
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.account_circle),
-          label: l10n.account.capitalize(),
+          icon: const Icon(Icons.currency_exchange),
+          label: l10n.rates.capitalize(),
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.bookmark),
           label: l10n.favorites.capitalize(),
         ),
         BottomNavigationBarItem(
-          icon: const Icon(Icons.language),
-          label: l10n.language.capitalize(),
+          icon: const Icon(Icons.settings),
+          label: l10n.settings.capitalize(),
         ),
       ],
       currentIndex: locationToIndex(routerState.location),

@@ -1,3 +1,4 @@
+import 'package:cash_tab/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -13,7 +14,7 @@ class FavoritesSearchInputWidget extends StatelessWidget {
             Radius.circular(15),
           ),
         ),
-        hintText: AppLocalizations.of(context)!.enter_amount_placeholder,
+        hintText: AppLocalizations.of(context)!.enter_the_value.capitalize(),
         suffixIcon: GestureDetector(
           onTap: () => {},
           child: Padding(

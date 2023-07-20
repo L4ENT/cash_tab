@@ -1,10 +1,13 @@
 {
     "home": "главная",
+    "rates": "котировки",
     "favorites": "избранное",
     "account": "аккаунт",
+    "settings": "настройки",
     "language": "язык",
-    "curreny_search_placeholder": "введите название или код",
+    "currency_search_placeholder": "введите название или код",
     "enter_amount_placeholder": "введите количество",
     "sort_recents": "недавние",
-    "sort_az": "по алфавиту"
+    "sort_az": "по алфавиту",
+    "enter_the_value": "введите значение"
 }

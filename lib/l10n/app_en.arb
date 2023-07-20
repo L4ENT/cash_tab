@@ -1,10 +1,13 @@
 {
     "home": "home",
+    "rates": "rates",
     "favorites": "favorites",
     "account": "account",
+    "settings": "settings",
     "language": "language",
-    "curreny_search_placeholder": "enter name or symbol",
+    "currency_search_placeholder": "enter name or symbol",
     "enter_amount_placeholder": "enter amount",
     "sort_recents": "recents",
-    "sort_az": "A-Z"
+    "sort_az": "A-Z",
+    "enter_the_value": "enter the value"
 }

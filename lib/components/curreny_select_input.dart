@@ -15,7 +15,7 @@ class CurrencySearchInputWidget extends StatelessWidget {
           ),
         ),
         hintText: AppLocalizations.of(context)!
-            .curreny_search_placeholder
+            .currency_search_placeholder
             .capitalize(),
         suffixIcon: GestureDetector(
           onTap: () => {},
