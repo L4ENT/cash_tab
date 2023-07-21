@@ -38,43 +38,71 @@ class HomeCurrencyInputState extends ConsumerState<HomeCurrencyInputWidget> {
     final inputsManager = ref.watch(ratesInputsEditProvider);
     textController.text = value.toString();
 
-    return TextField(
-      controller: textController,
-      onChanged: (value) {
-        try {
-          final doubleValue = double.parse(value);
-          inputsManager.onInputChange(widget.currency, doubleValue);
-        } catch (e) {}
-      },
-      inputFormatters: <TextInputFormatter>[
-        FilteringTextInputFormatter.allow(RegExp(r"[0-9.]"))
-      ],
-      decoration: InputDecoration(
-        hintText: l10n.enter_amount_placeholder.capitalize(),
-        suffixIcon: GestureDetector(
-          onTap: () => {
-            router.push('/currency/select/${widget.index}'),
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  widget.currency,
-                  style: Theme.of(context).textTheme.titleMedium,
+    final ratesListNotifier = ref.watch(ratesViewInputListProvider.notifier);
+
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            controller: textController,
+            onChanged: (value) {
+              try {
+                final doubleValue = double.parse(value);
+                inputsManager.onInputChange(widget.currency, doubleValue);
+              } catch (e) {}
+            },
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp(r"[0-9.]"))
+            ],
+            decoration: InputDecoration(
+              hintText: l10n.enter_amount_placeholder.capitalize(),
+              suffixIcon: GestureDetector(
+                onTap: () => {
+                  router.push('/currency/select/${widget.index}'),
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        widget.currency,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.arrow_drop_down),
+                    ],
+                  ),
                 ),
-                const SizedBox(width: 8),
-                const Icon(Icons.arrow_drop_down),
-              ],
+              ),
+            ),
+            keyboardType: const TextInputType.numberWithOptions(
+              decimal: true,
             ),
           ),
         ),
-      ),
-      keyboardType: const TextInputType.numberWithOptions(
-        decimal: true,
-      ),
+        if (widget.index > 1)
+          Row(
+            children: [
+              const SizedBox(width: 16),
+              GestureDetector(
+                onTap: () => {ratesListNotifier.remove(widget.currency)},
+                child: const Icon(Icons.remove_circle),
+              ),
+            ],
+          ),
+        if (widget.index > 0)
+          Row(
+            children: [
+              const SizedBox(width: 16),
+              GestureDetector(
+                onTap: () => {ratesListNotifier.up(widget.currency)},
+                child: const Icon(Icons.arrow_upward),
+              ),
+            ],
+          ),
+      ],
     );
   }
 }
