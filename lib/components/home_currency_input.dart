@@ -47,7 +47,7 @@ class HomeCurrencyInputState extends ConsumerState<HomeCurrencyInputWidget> {
         } catch (e) {}
       },
       inputFormatters: <TextInputFormatter>[
-        FilteringTextInputFormatter.digitsOnly
+        FilteringTextInputFormatter.allow(RegExp(r"[0-9.]"))
       ],
       decoration: InputDecoration(
         border: const OutlineInputBorder(
