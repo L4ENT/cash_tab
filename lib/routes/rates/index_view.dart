@@ -1,8 +1,11 @@
 import 'package:cash_tab/components/home_currency_input.dart';
 import 'package:cash_tab/providers/rates_providers.dart';
+import 'package:cash_tab/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:quiver/iterables.dart';
 
 class RatesView extends ConsumerStatefulWidget {
   const RatesView({super.key, required this.title});
@@ -14,9 +17,70 @@ class RatesView extends ConsumerStatefulWidget {
 }
 
 class RatesViewState extends ConsumerState<RatesView> {
+  List<int> generateBanknotes(double usdPrice) {
+    final List<int> result = [];
+    final List<double> usdAmounts = [
+      0.1,
+      0.5,
+      1,
+      5,
+      10,
+      20,
+      50,
+      100,
+      1000,
+      5000,
+      10000,
+      50000,
+    ];
+    final List<double> banknotes = [
+      1,
+      5,
+      10,
+      20,
+      50,
+      100,
+      500,
+      1000,
+      2000,
+      5000,
+      10000,
+      50000,
+      100000,
+      200000,
+      500000,
+      1000000,
+      2000000,
+      5000000,
+      10000000,
+      100000000,
+      500000000,
+    ];
+    for (var usdAmount in usdAmounts) {
+      final bPairs = zip([
+        banknotes.sublist(0, banknotes.length - 1),
+        banknotes.sublist(1),
+      ]);
+      for (var bPair in bPairs) {
+        final value = usdAmount / usdPrice;
+        final left = bPair[0];
+        final right = bPair[1];
+        if (left <= value && value <= right) {
+          final banknote = closestTo(value, left, right).toInt();
+          if (!result.contains(banknote)) {
+            result.add(banknote);
+            break;
+          }
+        }
+      }
+    }
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final formatter = NumberFormat('#,###.00');
+    final router = GoRouter.of(context);
+    final formatter = NumberFormat('#,##0.00');
     List<String> rates = ref.watch(ratesViewInputListProvider);
     final ratesRatio = ref.watch(ratesRatioProvider);
 
@@ -77,7 +141,7 @@ class RatesViewState extends ConsumerState<RatesView> {
                         ),
                     IconButton(
                       onPressed: () => {
-                        // TODO: Open search view
+                        router.push('/currency/select/${rates.length}'),
                       },
                       icon: const Icon(Icons.add),
                     )
@@ -114,8 +178,7 @@ class RatesViewState extends ConsumerState<RatesView> {
                               )
                             ],
                           ),
-                          // TODO: Вставить массив номиналов
-                          ...[100, 500, 1000, 5000, 10000].map(
+                          ...generateBanknotes(ratesMap[rates[0]]).map(
                             (i) => TableRow(
                               children: [
                                 ...rates.asMap().entries.map(
@@ -130,13 +193,12 @@ class RatesViewState extends ConsumerState<RatesView> {
                                           formatter
                                               .format(
                                                 i *
-                                                    (ratesMap[rates[
-                                                            e.key - 1 > 0
-                                                                ? e.key - 1
-                                                                : 0]] /
+                                                    (ratesMap[rates[0]] /
                                                         ratesMap[rates[e.key]]),
                                               )
-                                              .toString(),
+                                              .toString()
+                                              .replaceAll(',', ' ')
+                                              .replaceAll('.', ','),
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyLarge,

@@ -14,8 +14,12 @@ class RatesInputsListNotifier extends StateNotifier<List<String>> {
 
   void replace(String code, int index) {
     List<String> updated = [...state];
-    updated[index] = code;
-    state = updated;
+    if (index >= 0 && index < state.length) {
+      updated[index] = code;
+      state = updated;
+    } else {
+      add(code);
+    }
   }
 
   void up(String code) {
