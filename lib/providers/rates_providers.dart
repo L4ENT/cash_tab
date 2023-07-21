@@ -1,3 +1,4 @@
+import 'package:cash_tab/providers/db_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RatesInputsListNotifier extends StateNotifier<List<String>> {
@@ -57,17 +58,34 @@ class RatesInputManager {
 
   final Ref ref;
 
-  onInputChange(String code, double value) {
+  Future<void> onInputChange(String code, double value) async {
     List<String> inputRatesCodes = ref.read(ratesViewInputListProvider);
+    final db = await ref.read(dbServiceProvider.future);
+
     final ratesToChange = inputRatesCodes.where((el) => el != code);
-    for (var el in ratesToChange) {
-      final inputProvider = ref.read(rateViewInputFamily(el).notifier);
-      // TODO:  get the real rate
-      inputProvider.state = value * 100;
+
+    final mainRateItem = (await db.ratesRepository.getBySymbol(code))!;
+
+    for (var symbol in ratesToChange) {
+      final inputProvider = ref.read(rateViewInputFamily(symbol).notifier);
+      final rateItem = (await db.ratesRepository.getBySymbol(symbol))!;
+      double result = (value * (mainRateItem.usdPrice! / rateItem.usdPrice!));
+      inputProvider.state = double.parse((result).toStringAsFixed(2));
     }
   }
 }
 
 final ratesInputsEditProvider = Provider((ref) {
   return RatesInputManager(ref);
+});
+
+final ratesRatioProvider = FutureProvider((ref) async {
+  final symbols = ref.watch(ratesViewInputListProvider);
+  final db = await ref.read(dbServiceProvider.future);
+  final rates = await db.ratesRepository.getBySymbolsList(symbols);
+  final ratesMap = {};
+  for (var rate in rates) {
+    ratesMap[rate.symbol] = rate.usdPrice!;
+  }
+  return ratesMap;
 });

@@ -17,13 +17,8 @@ class RatesViewState extends ConsumerState<RatesView> {
   @override
   Widget build(BuildContext context) {
     final formatter = NumberFormat('#,###.00');
-    final ratesViewInputListProviderNotifier = ref.read(
-      ratesViewInputListProvider.notifier,
-    );
     List<String> rates = ref.watch(ratesViewInputListProvider);
-    // TODO: подтягивать реальные рейты
-    const rate1 = 0.011;
-    const rate2 = 165.16;
+    final ratesRatio = ref.watch(ratesRatioProvider);
 
     final theme = Theme.of(context);
 
@@ -46,7 +41,7 @@ class RatesViewState extends ConsumerState<RatesView> {
                   children: [
                     Expanded(
                       child: Text(
-                        'USD / RUB / IDR',
+                        rates.join(' / '),
                         style: theme.textTheme.headlineSmall,
                         textAlign: TextAlign.left,
                       ),
@@ -94,56 +89,68 @@ class RatesViewState extends ConsumerState<RatesView> {
                     horizontal: 24,
                     vertical: 16,
                   ),
-                  child: Table(
-                    children: [
-                      TableRow(
+                  child: ratesRatio.when(
+                    loading: () => const CircularProgressIndicator(),
+                    error: (err, stack) => Text('Error: $err'),
+                    data: (ratesMap) {
+                      return Table(
                         children: [
-                          ...['USD', 'EUR', 'RUB'].map(
-                            (el) => TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.top,
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: Text(
-                                  el,
-                                  style: Theme.of(context).textTheme.titleLarge,
+                          TableRow(
+                            children: [
+                              ...rates.map(
+                                (el) => TableCell(
+                                  verticalAlignment:
+                                      TableCellVerticalAlignment.top,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 16),
+                                    child: Text(
+                                      el,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              )
+                            ],
+                          ),
+                          // TODO: Вставить массив номиналов
+                          ...[100, 500, 1000, 5000, 10000].map(
+                            (i) => TableRow(
+                              children: [
+                                ...rates.asMap().entries.map(
+                                  (e) {
+                                    return TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.top,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 16),
+                                        child: Text(
+                                          formatter
+                                              .format(
+                                                i *
+                                                    (ratesMap[rates[
+                                                            e.key - 1 > 0
+                                                                ? e.key - 1
+                                                                : 0]] /
+                                                        ratesMap[rates[e.key]]),
+                                              )
+                                              .toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              ],
                             ),
                           )
                         ],
-                      ),
-                      // TODO: Вставить массив номиналов
-                      ...[100, 500, 1000, 5000, 10000].map(
-                        (i) => TableRow(
-                          children: [
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.top,
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: Text(
-                                  formatter.format(i).toString(),
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                              ),
-                            ),
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.top,
-                              child: Text(
-                                formatter.format(i * rate1),
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                            ),
-                            TableCell(
-                              verticalAlignment: TableCellVerticalAlignment.top,
-                              child: Text(
-                                formatter.format(i * rate2),
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
+                      );
+                    },
                   )),
               // Add more widgets as needed
             ],
