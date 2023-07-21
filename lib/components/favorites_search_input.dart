@@ -9,11 +9,6 @@ class FavoritesSearchInputWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       decoration: InputDecoration(
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(15),
-          ),
-        ),
         hintText: AppLocalizations.of(context)!.enter_the_value.capitalize(),
         suffixIcon: GestureDetector(
           onTap: () => {},

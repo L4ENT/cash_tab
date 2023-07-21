@@ -1,4 +1,6 @@
+import 'package:cash_tab/isar/shortcuts.dart';
 import 'package:cash_tab/routes/router.dart';
+import 'package:cash_tab/seed/currency_rates_seed.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,8 +10,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 var uuidLib = const Uuid();
 
 void main() async {
+  // WidgetsFlutterBinding.ensureInitialized();
   // final isar = await isarOpen();
-  // await mainSeed(isar);
+  // await seedRatesCollection(isar);
   // await cleanSeed(isar);
   runApp(const ProviderScope(child: MyApp()));
 }

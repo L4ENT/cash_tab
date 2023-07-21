@@ -50,11 +50,6 @@ class HomeCurrencyInputState extends ConsumerState<HomeCurrencyInputWidget> {
         FilteringTextInputFormatter.allow(RegExp(r"[0-9.]"))
       ],
       decoration: InputDecoration(
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(15),
-          ),
-        ),
         hintText: l10n.enter_amount_placeholder.capitalize(),
         suffixIcon: GestureDetector(
           onTap: () => {
