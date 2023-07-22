@@ -1,6 +1,6 @@
 import 'package:cash_tab/components/curreny_select_input.dart';
+import 'package:cash_tab/managers/rates_manager.dart';
 import 'package:cash_tab/providers/db_provider.dart';
-import 'package:cash_tab/providers/rates_providers.dart';
 import 'package:cash_tab/utils.dart';
 import 'package:cash_tab/providers/rates_view_search_providers.dart';
 import 'package:flutter/material.dart';
@@ -39,11 +39,8 @@ class CurrencySearchViewState extends ConsumerState<CurrencySelectView> {
   @override
   Widget build(BuildContext context) {
     final router = GoRouter.of(context);
-
     final symbols = ref.watch(ratesViewSearchResults);
-
-    final ratesViewInputListNotifier =
-        ref.read(ratesViewInputListProvider.notifier);
+    final ratesManager = ref.read(ratesManagerProvider);
 
     return Scaffold(
       appBar: AppBar(),
@@ -73,8 +70,10 @@ class CurrencySearchViewState extends ConsumerState<CurrencySelectView> {
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
-                                  ratesViewInputListNotifier.replace(
-                                      rate.symbol, widget.index);
+                                  ratesManager.ratesViewPutSymbol(
+                                    widget.index,
+                                    rate.symbol,
+                                  );
                                   router.go('/');
                                 },
                                 child: Text(

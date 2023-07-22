@@ -1,5 +1,5 @@
 import 'package:cash_tab/components/home_currency_input.dart';
-import 'package:cash_tab/providers/db_provider.dart';
+import 'package:cash_tab/managers/rates_manager.dart';
 import 'package:cash_tab/providers/rates_providers.dart';
 import 'package:cash_tab/utils.dart';
 import 'package:flutter/material.dart';
@@ -88,6 +88,8 @@ class RatesViewState extends ConsumerState<RatesView> {
     final theme = Theme.of(context);
     final inFavoritesAsync = ref.watch(inFavoritesDbProvider);
 
+    final ratesManager = ref.read(ratesManagerProvider);
+
     return Scaffold(
       appBar: AppBar(),
       body: GestureDetector(
@@ -114,17 +116,7 @@ class RatesViewState extends ConsumerState<RatesView> {
                     ),
                     IconButton(
                       onPressed: () async {
-                        final db = await ref.read(dbServiceProvider.future);
-                        final notifier = ref.read(faviriteTriigger.notifier);
-                        final flag =
-                            await db.favoritesRepository.isFavorites(rates);
-
-                        if (flag) {
-                          await db.favoritesRepository.remove(rates);
-                        } else {
-                          await db.favoritesRepository.add(rates);
-                        }
-                        notifier.state = !notifier.state;
+                        await ratesManager.ratesViewAddToFavorites();
                       },
                       icon: Icon(
                         // inFavorites ? Icons.bookmark : Icons.bookmark_outline,
