@@ -14,11 +14,27 @@ class SettingsView extends ConsumerStatefulWidget {
   SettingsViewState createState() => SettingsViewState();
 }
 
+class MenuItem {
+  MenuItem({required this.title, required this.onTap});
+
+  String title;
+  void Function() onTap;
+}
+
 class SettingsViewState extends ConsumerState<SettingsView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final router = GoRouter.of(context);
+
+    final menuItems = [
+      MenuItem(
+        title: l10n!.language.capitalize(),
+        onTap: () {
+          router.push('/settings/language');
+        },
+      )
+    ];
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.title.capitalize())),
@@ -27,14 +43,16 @@ class SettingsViewState extends ConsumerState<SettingsView> {
           horizontal: 24,
           vertical: 24,
         ),
-        child: ListView(
-          // TODO: Get real languages list and current lang
-          children: [
-            ListTile(
-              title: Text(l10n!.language.capitalize()),
-              onTap: () => {router.push('/settings/language')},
-            )
-          ],
+        child: ListView.separated(
+          itemCount: menuItems.length,
+          separatorBuilder: (context, index) => const Divider(
+            height: 1, // Customize the color of the separator here
+          ),
+          itemBuilder: (context, index) => ListTile(
+            title: Text(menuItems[index].title),
+            trailing: const Icon(Icons.arrow_forward),
+            onTap: menuItems[index].onTap,
+          ),
         ),
       ),
     );

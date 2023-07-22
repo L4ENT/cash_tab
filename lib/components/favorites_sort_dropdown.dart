@@ -36,10 +36,8 @@ class _FavoritesSortDropdownState extends ConsumerState<FavoritesSortDropdown> {
       value: lables[currentValue],
       icon: const Icon(Icons.arrow_downward),
       elevation: 16,
-      style: const TextStyle(color: Colors.deepPurple),
       underline: Container(
         height: 2,
-        color: Colors.deepPurpleAccent,
       ),
       onChanged: (String? value) async {
         notifier.state = values[value]!;
