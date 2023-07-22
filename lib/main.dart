@@ -1,7 +1,6 @@
 import 'package:cash_tab/isar/shortcuts.dart';
 import 'package:cash_tab/providers/settings_providers.dart';
 import 'package:cash_tab/routes/router.dart';
-import 'package:cash_tab/seed/currency_rates_seed.dart';
 import 'package:cash_tab/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
