@@ -9,5 +9,7 @@
     "enter_amount_placeholder": "введите количество",
     "sort_recents": "недавние",
     "sort_az": "по алфавиту",
-    "enter_the_value": "введите значение"
+    "enter_the_value": "введите значение",
+    "dark_mode": "темная тема",
+    "appereance": "оформление"
 }

@@ -1,6 +1,4 @@
 import 'package:cash_tab/managers/favorites_manager.dart';
-import 'package:cash_tab/providers/db_provider.dart';
-import 'package:cash_tab/providers/favorites_providers.dart';
 import 'package:cash_tab/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -12,6 +10,7 @@ class FavoritesSearchInputWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final favoritesManager = ref.read(favoritesManagerProvider);
+    final theme = Theme.of(context);
     return TextField(
       onChanged: (String value) async {
         await favoritesManager.updateViewList(prompt: value);

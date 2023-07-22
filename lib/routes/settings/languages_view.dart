@@ -23,6 +23,7 @@ class LanguagesViewState extends ConsumerState<LanguagesView> {
     final language = ref.watch(languageProvider);
     Locale currentLocale = Localizations.localeOf(context);
     final languageNotifier = ref.read(languageProvider.notifier);
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: Text(widget.title.capitalize())),
       body: Padding(
@@ -53,7 +54,10 @@ class LanguagesViewState extends ConsumerState<LanguagesView> {
                             ),
                           ),
                           if (language == l.languageCode)
-                            const Icon(Icons.check)
+                            Icon(
+                              Icons.check,
+                              color: theme.iconTheme.color,
+                            )
                         ],
                       ),
                     ),

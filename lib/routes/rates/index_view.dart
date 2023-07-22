@@ -91,7 +91,30 @@ class RatesViewState extends ConsumerState<RatesView> {
     final ratesManager = ref.read(ratesManagerProvider);
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        centerTitle: false,
+        title: Text(
+          rates.join(' / '),
+          style: theme.textTheme.titleLarge,
+          textAlign: TextAlign.left,
+        ),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await ratesManager.ratesViewAddToFavorites();
+            },
+            icon: Icon(
+              // inFavorites ? Icons.bookmark : Icons.bookmark_outline,
+              inFavoritesAsync.when(
+                data: (flag) => flag ? Icons.bookmark : Icons.bookmark_outline,
+                error: (error, _) => Icons.bookmark_outline,
+                loading: () => Icons.bookmark_outline,
+              ),
+              color: theme.primaryColor,
+            ),
+          )
+        ],
+      ),
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
@@ -100,39 +123,6 @@ class RatesViewState extends ConsumerState<RatesView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 24,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        rates.join(' / '),
-                        style: theme.textTheme.headlineSmall,
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () async {
-                        await ratesManager.ratesViewAddToFavorites();
-                      },
-                      icon: Icon(
-                        // inFavorites ? Icons.bookmark : Icons.bookmark_outline,
-                        inFavoritesAsync.when(
-                          data: (flag) =>
-                              flag ? Icons.bookmark : Icons.bookmark_outline,
-                          error: (error, _) => Icons.bookmark_outline,
-                          loading: () => Icons.bookmark_outline,
-                        ),
-                        color: theme.colorScheme.primary,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              // Add your scrollable content here
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -181,7 +171,10 @@ class RatesViewState extends ConsumerState<RatesView> {
                                       el,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .titleLarge,
+                                          .titleMedium!
+                                          .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                     ),
                                   ),
                                 ),
@@ -211,7 +204,7 @@ class RatesViewState extends ConsumerState<RatesView> {
                                               .replaceAll('.', ','),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyLarge,
+                                              .titleMedium,
                                         ),
                                       ),
                                     );

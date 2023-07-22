@@ -2,7 +2,7 @@ import 'package:cash_tab/isar/shortcuts.dart';
 import 'package:cash_tab/providers/settings_providers.dart';
 import 'package:cash_tab/routes/router.dart';
 import 'package:cash_tab/seed/currency_rates_seed.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:cash_tab/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -17,14 +17,6 @@ void main() async {
   // await cleanSeed(isar);
   runApp(const ProviderScope(child: MyApp()));
 }
-
-final ThemeData customTheme = ThemeData(
-  textTheme: GoogleFonts.montserratTextTheme(),
-  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-    selectedItemColor: Colors.blue,
-    unselectedItemColor: Colors.black26, // Set the desired color
-  ),
-);
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
@@ -46,13 +38,16 @@ class MyAppState extends ConsumerState<MyApp> {
   @override
   Widget build(BuildContext context) {
     final language = ref.watch(languageProvider);
+    final darkMode = ref.watch(darkThemeProvider);
     return MaterialApp.router(
       title: 'CashTab',
       routerConfig: routerConfig,
-      theme: customTheme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       locale: Locale(language),
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
     );
   }
 }

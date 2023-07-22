@@ -77,6 +77,7 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
                                   favoritesManager.remove(favoriteItem.symbols);
                                 },
                               ),
+                              const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   favoriteItem.symbols.join(' / '),
@@ -85,7 +86,7 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
                                 ),
                               ),
                               GestureDetector(
-                                child: const Icon(Icons.arrow_circle_right),
+                                child: const Icon(Icons.arrow_forward),
                                 onTap: () async {
                                   favoritesManager
                                       .updateUsedAt(favoriteItem.symbols);

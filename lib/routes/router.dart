@@ -1,3 +1,4 @@
+import 'package:cash_tab/routes/settings/appereance_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -60,6 +61,15 @@ final GoRouter routerConfig = GoRouter(
           builder: (BuildContext context, GoRouterState state) {
             return LanguagesView(
               title: AppLocalizations.of(context)!.language,
+            );
+          },
+        ),
+        GoRoute(
+          parentNavigatorKey: _shellNavigatorKey,
+          path: '/settings/appereance',
+          builder: (BuildContext context, GoRouterState state) {
+            return AppearanceSettingsView(
+              title: AppLocalizations.of(context)!.appereance,
             );
           },
         ),

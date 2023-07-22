@@ -59,6 +59,8 @@ class AppNavigation extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return BottomNavigationBar(
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: const Icon(Icons.currency_exchange),

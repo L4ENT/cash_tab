@@ -1,3 +1,4 @@
+import 'package:cash_tab/providers/settings_providers.dart';
 import 'package:cash_tab/utils.dart';
 import 'package:cash_tab/language.dart';
 import 'package:flutter/material.dart';
@@ -5,41 +6,39 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
-class SettingsView extends ConsumerStatefulWidget {
-  const SettingsView({super.key, required this.title});
+class AppearanceSettingsView extends ConsumerStatefulWidget {
+  const AppearanceSettingsView({super.key, required this.title});
 
   final String title;
 
   @override
-  SettingsViewState createState() => SettingsViewState();
+  AppearanceSettingsViewState createState() => AppearanceSettingsViewState();
 }
 
-class MenuItem {
-  MenuItem({required this.title, required this.onTap});
+class AppearanceMenuItem {
+  AppearanceMenuItem({required this.title, required this.widget});
 
   String title;
-  void Function() onTap;
+  Widget widget;
 }
 
-class SettingsViewState extends ConsumerState<SettingsView> {
+class AppearanceSettingsViewState
+    extends ConsumerState<AppearanceSettingsView> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
-    final router = GoRouter.of(context);
+    final l10n = AppLocalizations.of(context);
+    final darkTheme = ref.watch(darkThemeProvider);
+    final darkThemeNotifier = ref.watch(darkThemeProvider.notifier);
 
     final menuItems = [
-      MenuItem(
-        title: l10n.language.capitalize(),
-        onTap: () {
-          router.push('/settings/language');
-        },
-      ),
-      MenuItem(
-        title: l10n.appereance.capitalize(),
-        onTap: () {
-          router.push('/settings/appereance');
-        },
+      AppearanceMenuItem(
+        title: l10n!.dark_mode.capitalize(),
+        widget: Checkbox(
+          value: darkTheme,
+          onChanged: (value) {
+            darkThemeNotifier.set(value!);
+          },
+        ),
       )
     ];
 
@@ -57,11 +56,7 @@ class SettingsViewState extends ConsumerState<SettingsView> {
           ),
           itemBuilder: (context, index) => ListTile(
             title: Text(menuItems[index].title),
-            trailing: Icon(
-              Icons.arrow_forward,
-              color: theme.iconTheme.color,
-            ),
-            onTap: menuItems[index].onTap,
+            trailing: menuItems[index].widget,
           ),
         ),
       ),
