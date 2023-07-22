@@ -20,7 +20,7 @@ class FavoritesSearchInputWidget extends ConsumerWidget {
           final items = await db.favoritesRepository.search(value);
           listNotifier.setUp(items);
         } else {
-          final items = await db.favoritesRepository.all(sortState);
+          final items = await db.favoritesRepository.all(sort: sortState);
           listNotifier.setUp(items);
         }
       },

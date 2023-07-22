@@ -30,7 +30,7 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
   Future<void> onInitState() async {
     final dbService = await ref.read(dbServiceProvider.future);
     final sort = ref.read(favoritesSortState);
-    final items = await dbService.favoritesRepository.all(sort);
+    final items = await dbService.favoritesRepository.all(sort: sort);
     final favoritesNotifier = ref.read(favoritesSearchResults.notifier);
     favoritesNotifier.setUp(items);
   }
@@ -73,6 +73,20 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
                           padding: const EdgeInsets.only(bottom: 24),
                           child: Row(
                             children: [
+                              GestureDetector(
+                                child: const Icon(Icons.remove_circle),
+                                onTap: () async {
+                                  final db =
+                                      await ref.read(dbServiceProvider.future);
+                                  await db.favoritesRepository
+                                      .remove(favoriteItem.symbols);
+                                  final listNotifier =
+                                      ref.read(favoritesSearchResults.notifier);
+                                  final items =
+                                      await db.favoritesRepository.all();
+                                  listNotifier.setUp(items);
+                                },
+                              ),
                               Expanded(
                                 child: Text(
                                   favoriteItem.symbols.join(' / '),

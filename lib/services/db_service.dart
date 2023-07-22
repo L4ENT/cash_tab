@@ -47,7 +47,7 @@ class FavoritesRepository {
 
   final Isar isar;
 
-  Future<List<FavoritesItem>> all(FavoritesSort? sort) async {
+  Future<List<FavoritesItem>> all({FavoritesSort? sort}) async {
     switch (sort) {
       case FavoritesSort.az:
         return await allSortedByAz();

@@ -43,7 +43,7 @@ class _FavoritesSortDropdownState extends ConsumerState<FavoritesSortDropdown> {
         notifier.state = values[value]!;
         final db = await ref.read(dbServiceProvider.future);
         final listNotifier = ref.read(favoritesSearchResults.notifier);
-        final items = await db.favoritesRepository.all(values[value]!);
+        final items = await db.favoritesRepository.all();
         listNotifier.setUp(items);
       },
       items: lables.values.map<DropdownMenuItem<String>>((String value) {
