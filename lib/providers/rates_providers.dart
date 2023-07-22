@@ -1,5 +1,4 @@
 import 'package:cash_tab/providers/db_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RatesInputsListNotifier extends StateNotifier<List<String>> {
@@ -99,10 +98,21 @@ final ratesRatioProvider = FutureProvider((ref) async {
   return ratesMap;
 });
 
-final faviriteTriigger = StateProvider((ref) => true);
+class FavoriteTriggerNotifier extends StateNotifier<bool> {
+  FavoriteTriggerNotifier() : super(false);
+
+  trigger() {
+    state = !state;
+  }
+}
+
+final ratesViewFavoriteTrigger =
+    StateNotifierProvider<FavoriteTriggerNotifier, bool>(
+  (ref) => FavoriteTriggerNotifier(),
+);
 
 final inFavoritesDbProvider = FutureProvider((ref) async {
-  ref.watch(faviriteTriigger);
+  ref.watch(ratesViewFavoriteTrigger);
   final symbols = ref.watch(ratesViewInputListProvider);
   final db = await ref.read(dbServiceProvider.future);
   return await db.favoritesRepository.isFavorites(symbols);

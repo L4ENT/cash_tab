@@ -30,10 +30,8 @@ class CurrencySearchViewState extends ConsumerState<CurrencySelectView> {
   }
 
   Future<void> onInitState() async {
-    final dbService = await ref.watch(dbServiceProvider.future);
-    final items = await dbService.ratesRepository.all();
-    final symbolsNotifier = ref.watch(ratesViewSearchResults.notifier);
-    symbolsNotifier.setUp(items);
+    final ratesManager = ref.watch(ratesManagerProvider);
+    await ratesManager.updateSerachView();
   }
 
   @override

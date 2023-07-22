@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cash_tab/isar/collections/currency_rates_collection.dart';
 import 'package:cash_tab/isar/collections/favorites_colection.dart';
 import 'package:cash_tab/routes/favorites/enums.dart';
@@ -19,13 +17,13 @@ class RatesRepository extends SubService {
     return allRates;
   }
 
-  Future<List<RatesCollectionItem>> search(String query) async {
-    final result = await isar
-        .collection<RatesCollectionItem>()
-        .where()
-        .wordsElementStartsWith(query)
-        .findAll();
-    return result;
+  Future<List<RatesCollectionItem>> search(String prompt) async {
+    final query = isar.collection<RatesCollectionItem>().where();
+    if (prompt.length > 2) {
+      return query.wordsElementStartsWith(prompt).sortByName().findAll();
+    } else {
+      return query.sortByName().findAll();
+    }
   }
 
   Future<RatesCollectionItem?> getBySymbol(String symbol) async {
@@ -102,12 +100,32 @@ class FavoritesRepository {
     });
   }
 
-  Future<List<FavoritesItem>> search(String query) async {
-    return await isar
-        .collection<FavoritesItem>()
-        .where()
-        .wordsElementStartsWith(query)
-        .findAll();
+  Future<List<FavoritesItem>> search(
+    String prompt, {
+    FavoritesSort? sort,
+  }) async {
+    // TODO: REFACTOR THIS !!!!!!!!!
+    final query = isar.collection<FavoritesItem>().where();
+    if (prompt.length > 2) {
+      query.wordsElementStartsWith(prompt);
+      switch (sort) {
+        case FavoritesSort.az:
+          return await query.sortByKey().findAll();
+        case FavoritesSort.recents:
+          return await query.sortByUsedAtDesc().findAll();
+        default:
+          return await query.sortByKey().findAll();
+      }
+    } else {
+      switch (sort) {
+        case FavoritesSort.az:
+          return await query.sortByKey().findAll();
+        case FavoritesSort.recents:
+          return await query.sortByUsedAtDesc().findAll();
+        default:
+          return await query.sortByKey().findAll();
+      }
+    }
   }
 }
 

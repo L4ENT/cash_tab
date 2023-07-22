@@ -1,5 +1,6 @@
 import 'package:cash_tab/providers/db_provider.dart';
 import 'package:cash_tab/providers/rates_providers.dart';
+import 'package:cash_tab/providers/rates_view_search_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RatesManager {
@@ -7,9 +8,21 @@ class RatesManager {
 
   final Ref ref;
 
+  Future<void> updateSerachView({String? prompt}) async {
+    final dbProvider = await ref.watch(dbServiceProvider.future);
+    final items = await dbProvider.ratesRepository.search(prompt ?? '');
+    final symbolsNotifier = ref.watch(ratesViewSearchResults.notifier);
+    symbolsNotifier.setUp(items);
+  }
+
+  setUpRatesView(List<String> symbols) {
+    final ratesNotifier = ref.watch(ratesViewInputListProvider.notifier);
+    ratesNotifier.setUp(symbols);
+  }
+
   Future<void> ratesViewAddToFavorites() async {
     final db = await ref.read(dbServiceProvider.future);
-    final notifier = ref.read(faviriteTriigger.notifier);
+    final favoritesTrigger = ref.read(ratesViewFavoriteTrigger.notifier);
     final rates = ref.read(ratesViewInputListProvider);
     final flag = await db.favoritesRepository.isFavorites(rates);
     if (flag) {
@@ -17,7 +30,7 @@ class RatesManager {
     } else {
       await db.favoritesRepository.add(rates);
     }
-    notifier.state = !notifier.state;
+    favoritesTrigger.trigger();
   }
 
   ratesViewPutSymbol(int index, String symbol) {

@@ -1,3 +1,4 @@
+import 'package:cash_tab/managers/favorites_manager.dart';
 import 'package:cash_tab/providers/db_provider.dart';
 import 'package:cash_tab/providers/favorites_providers.dart';
 import 'package:cash_tab/routes/favorites/enums.dart';
@@ -29,6 +30,7 @@ class _FavoritesSortDropdownState extends ConsumerState<FavoritesSortDropdown> {
 
     final currentValue = ref.watch(favoritesSortState);
     final notifier = ref.watch(favoritesSortState.notifier);
+    final favoritesManager = ref.read(favoritesManagerProvider);
 
     return DropdownButton<String>(
       value: lables[currentValue],
@@ -41,10 +43,7 @@ class _FavoritesSortDropdownState extends ConsumerState<FavoritesSortDropdown> {
       ),
       onChanged: (String? value) async {
         notifier.state = values[value]!;
-        final db = await ref.read(dbServiceProvider.future);
-        final listNotifier = ref.read(favoritesSearchResults.notifier);
-        final items = await db.favoritesRepository.all();
-        listNotifier.setUp(items);
+        await favoritesManager.updateViewList();
       },
       items: lables.values.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(

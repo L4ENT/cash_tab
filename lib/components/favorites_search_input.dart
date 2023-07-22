@@ -1,3 +1,4 @@
+import 'package:cash_tab/managers/favorites_manager.dart';
 import 'package:cash_tab/providers/db_provider.dart';
 import 'package:cash_tab/providers/favorites_providers.dart';
 import 'package:cash_tab/utils.dart';
@@ -10,19 +11,10 @@ class FavoritesSearchInputWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final favoritesManager = ref.read(favoritesManagerProvider);
     return TextField(
       onChanged: (String value) async {
-        final sortState = ref.read(favoritesSortState);
-        final db = await ref.read(dbServiceProvider.future);
-        final listNotifier = ref.read(favoritesSearchResults.notifier);
-
-        if (value.length > 2) {
-          final items = await db.favoritesRepository.search(value);
-          listNotifier.setUp(items);
-        } else {
-          final items = await db.favoritesRepository.all(sort: sortState);
-          listNotifier.setUp(items);
-        }
+        await favoritesManager.updateViewList(prompt: value);
       },
       decoration: InputDecoration(
         hintText: AppLocalizations.of(context)!.enter_the_value.capitalize(),

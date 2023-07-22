@@ -1,8 +1,8 @@
 import 'package:cash_tab/components/favorites_search_input.dart';
 import 'package:cash_tab/components/favorites_sort_dropdown.dart';
-import 'package:cash_tab/providers/db_provider.dart';
+import 'package:cash_tab/managers/favorites_manager.dart';
+import 'package:cash_tab/managers/rates_manager.dart';
 import 'package:cash_tab/providers/favorites_providers.dart';
-import 'package:cash_tab/providers/rates_providers.dart';
 import 'package:cash_tab/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,11 +28,8 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
   }
 
   Future<void> onInitState() async {
-    final dbService = await ref.read(dbServiceProvider.future);
-    final sort = ref.read(favoritesSortState);
-    final items = await dbService.favoritesRepository.all(sort: sort);
-    final favoritesNotifier = ref.read(favoritesSearchResults.notifier);
-    favoritesNotifier.setUp(items);
+    final favoritesManager = ref.read(favoritesManagerProvider);
+    await favoritesManager.updateViewList();
   }
 
   @override
@@ -40,7 +37,8 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
     final router = GoRouter.of(context);
 
     final favorites = ref.watch(favoritesSearchResults);
-    final ratesNotifier = ref.watch(ratesViewInputListProvider.notifier);
+    final favoritesManager = ref.watch(favoritesManagerProvider);
+    final ratesManager = ref.read(ratesManagerProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.title.capitalize())),
@@ -76,15 +74,7 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
                               GestureDetector(
                                 child: const Icon(Icons.remove_circle),
                                 onTap: () async {
-                                  final db =
-                                      await ref.read(dbServiceProvider.future);
-                                  await db.favoritesRepository
-                                      .remove(favoriteItem.symbols);
-                                  final listNotifier =
-                                      ref.read(favoritesSearchResults.notifier);
-                                  final items =
-                                      await db.favoritesRepository.all();
-                                  listNotifier.setUp(items);
+                                  favoritesManager.remove(favoriteItem.symbols);
                                 },
                               ),
                               Expanded(
@@ -97,11 +87,10 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
                               GestureDetector(
                                 child: const Icon(Icons.arrow_circle_right),
                                 onTap: () async {
-                                  final db =
-                                      await ref.read(dbServiceProvider.future);
-                                  await db.favoritesRepository.updatedUsedAt(
-                                      favoriteItem.symbols.join(''));
-                                  ratesNotifier.setUp(favoriteItem.symbols);
+                                  favoritesManager
+                                      .updateUsedAt(favoriteItem.symbols);
+                                  ratesManager
+                                      .setUpRatesView(favoriteItem.symbols);
                                   router.go('/');
                                 },
                               )
