@@ -1,4 +1,5 @@
 import 'package:cash_tab/components/home_currency_input.dart';
+import 'package:cash_tab/providers/db_provider.dart';
 import 'package:cash_tab/providers/rates_providers.dart';
 import 'package:cash_tab/utils.dart';
 import 'package:flutter/material.dart';
@@ -85,6 +86,7 @@ class RatesViewState extends ConsumerState<RatesView> {
     final ratesRatio = ref.watch(ratesRatioProvider);
 
     final theme = Theme.of(context);
+    final inFavoritesAsync = ref.watch(inFavoritesDbProvider);
 
     return Scaffold(
       appBar: AppBar(),
@@ -111,11 +113,27 @@ class RatesViewState extends ConsumerState<RatesView> {
                       ),
                     ),
                     IconButton(
-                      // TODO: Add this setup to favorites
-                      onPressed: () => {},
+                      onPressed: () async {
+                        final db = await ref.read(dbServiceProvider.future);
+                        final notifier = ref.read(faviriteTriigger.notifier);
+                        final flag =
+                            await db.favoritesRepository.isFavorites(rates);
+
+                        if (flag) {
+                          await db.favoritesRepository.remove(rates);
+                        } else {
+                          await db.favoritesRepository.add(rates);
+                        }
+                        notifier.state = !notifier.state;
+                      },
                       icon: Icon(
-                        // TODO: Favorites flag
-                        true ? Icons.bookmark : Icons.bookmark_outline,
+                        // inFavorites ? Icons.bookmark : Icons.bookmark_outline,
+                        inFavoritesAsync.when(
+                          data: (flag) =>
+                              flag ? Icons.bookmark : Icons.bookmark_outline,
+                          error: (error, _) => Icons.bookmark_outline,
+                          loading: () => Icons.bookmark_outline,
+                        ),
                         color: theme.colorScheme.primary,
                       ),
                     )

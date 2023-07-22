@@ -1,8 +1,13 @@
 import 'package:cash_tab/providers/db_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RatesInputsListNotifier extends StateNotifier<List<String>> {
   RatesInputsListNotifier() : super(['USD', 'EUR']);
+
+  void setUp(List<String> symbols) {
+    state = symbols;
+  }
 
   void add(String code) {
     state = [...state, code];
@@ -92,4 +97,13 @@ final ratesRatioProvider = FutureProvider((ref) async {
     ratesMap[rate.symbol] = rate.usdPrice!;
   }
   return ratesMap;
+});
+
+final faviriteTriigger = StateProvider((ref) => true);
+
+final inFavoritesDbProvider = FutureProvider((ref) async {
+  ref.watch(faviriteTriigger);
+  final symbols = ref.watch(ratesViewInputListProvider);
+  final db = await ref.read(dbServiceProvider.future);
+  return await db.favoritesRepository.isFavorites(symbols);
 });

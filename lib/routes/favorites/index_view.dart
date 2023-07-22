@@ -1,5 +1,8 @@
 import 'package:cash_tab/components/favorites_search_input.dart';
 import 'package:cash_tab/components/favorites_sort_dropdown.dart';
+import 'package:cash_tab/providers/db_provider.dart';
+import 'package:cash_tab/providers/favorites_providers.dart';
+import 'package:cash_tab/providers/rates_providers.dart';
 import 'package:cash_tab/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,8 +19,27 @@ class FavoritesView extends ConsumerStatefulWidget {
 
 class FavoritesViewState extends ConsumerState<FavoritesView> {
   @override
+  void initState() {
+    Future.delayed(Duration.zero, () async {
+      await onInitState();
+    });
+
+    super.initState();
+  }
+
+  Future<void> onInitState() async {
+    final dbService = await ref.watch(dbServiceProvider.future);
+    final items = await dbService.favoritesRepository.all();
+    final favoritesNotifier = ref.watch(favoritesSearchResults.notifier);
+    favoritesNotifier.setUp(items);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final router = GoRouter.of(context);
+
+    final favorites = ref.watch(favoritesSearchResults);
+    final ratesNotifier = ref.watch(ratesViewInputListProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.title.capitalize())),
@@ -44,27 +66,24 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    // TODO: Get real favorites list
                     children: [
-                      ...['USD / RUB / IDR', 'USD / RUB', 'BTC / USD / RUB']
-                          .map(
-                        (name) => Padding(
+                      ...favorites.map(
+                        (favoriteItem) => Padding(
                           padding: const EdgeInsets.only(bottom: 24),
                           child: Row(
                             children: [
                               Expanded(
                                 child: Text(
-                                  name,
+                                  favoriteItem.symbols.join(' / '),
                                   style:
                                       Theme.of(context).textTheme.titleMedium,
                                 ),
                               ),
                               GestureDetector(
                                 child: const Icon(Icons.arrow_circle_right),
-                                onTap: () => {
-                                  // TODO: Navigate to home view
-                                  // 1. Change state of home View (list of currencies)
-                                  router.go('/')
+                                onTap: () {
+                                  ratesNotifier.setUp(favoriteItem.symbols);
+                                  router.go('/');
                                 },
                               )
                             ],
