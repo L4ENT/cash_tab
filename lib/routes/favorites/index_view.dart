@@ -28,9 +28,10 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
   }
 
   Future<void> onInitState() async {
-    final dbService = await ref.watch(dbServiceProvider.future);
-    final items = await dbService.favoritesRepository.all();
-    final favoritesNotifier = ref.watch(favoritesSearchResults.notifier);
+    final dbService = await ref.read(dbServiceProvider.future);
+    final sort = ref.read(favoritesSortState);
+    final items = await dbService.favoritesRepository.all(sort);
+    final favoritesNotifier = ref.read(favoritesSearchResults.notifier);
     favoritesNotifier.setUp(items);
   }
 
@@ -81,7 +82,11 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
                               ),
                               GestureDetector(
                                 child: const Icon(Icons.arrow_circle_right),
-                                onTap: () {
+                                onTap: () async {
+                                  final db =
+                                      await ref.read(dbServiceProvider.future);
+                                  await db.favoritesRepository.updatedUsedAt(
+                                      favoriteItem.symbols.join(''));
                                   ratesNotifier.setUp(favoriteItem.symbols);
                                   router.go('/');
                                 },

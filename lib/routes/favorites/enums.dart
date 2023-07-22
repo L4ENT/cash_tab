@@ -1,0 +1,1 @@
+enum FavoritesSort { az, recents }

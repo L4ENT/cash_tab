@@ -27,8 +27,13 @@ const FavoritesItemSchema = CollectionSchema(
       name: r'symbols',
       type: IsarType.stringList,
     ),
-    r'words': PropertySchema(
+    r'usedAt': PropertySchema(
       id: 2,
+      name: r'usedAt',
+      type: IsarType.dateTime,
+    ),
+    r'words': PropertySchema(
+      id: 3,
       name: r'words',
       type: IsarType.stringList,
     )
@@ -119,7 +124,8 @@ void _favoritesItemSerialize(
 ) {
   writer.writeString(offsets[0], object.key);
   writer.writeStringList(offsets[1], object.symbols);
-  writer.writeStringList(offsets[2], object.words);
+  writer.writeDateTime(offsets[2], object.usedAt);
+  writer.writeStringList(offsets[3], object.words);
 }
 
 FavoritesItem _favoritesItemDeserialize(
@@ -131,6 +137,7 @@ FavoritesItem _favoritesItemDeserialize(
   final object = FavoritesItem();
   object.id = id;
   object.symbols = reader.readStringList(offsets[1]) ?? [];
+  object.usedAt = reader.readDateTimeOrNull(offsets[2]);
   return object;
 }
 
@@ -146,6 +153,8 @@ P _favoritesItemDeserializeProp<P>(
     case 1:
       return (reader.readStringList(offset) ?? []) as P;
     case 2:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 3:
       return (reader.readStringList(offset) ?? []) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1010,6 +1019,80 @@ extension FavoritesItemQueryFilter
   }
 
   QueryBuilder<FavoritesItem, FavoritesItem, QAfterFilterCondition>
+      usedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'usedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<FavoritesItem, FavoritesItem, QAfterFilterCondition>
+      usedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'usedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<FavoritesItem, FavoritesItem, QAfterFilterCondition>
+      usedAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'usedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoritesItem, FavoritesItem, QAfterFilterCondition>
+      usedAtGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'usedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoritesItem, FavoritesItem, QAfterFilterCondition>
+      usedAtLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'usedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoritesItem, FavoritesItem, QAfterFilterCondition>
+      usedAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'usedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<FavoritesItem, FavoritesItem, QAfterFilterCondition>
       wordsElementEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1254,6 +1337,18 @@ extension FavoritesItemQuerySortBy
       return query.addSortBy(r'key', Sort.desc);
     });
   }
+
+  QueryBuilder<FavoritesItem, FavoritesItem, QAfterSortBy> sortByUsedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'usedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FavoritesItem, FavoritesItem, QAfterSortBy> sortByUsedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'usedAt', Sort.desc);
+    });
+  }
 }
 
 extension FavoritesItemQuerySortThenBy
@@ -1281,6 +1376,18 @@ extension FavoritesItemQuerySortThenBy
       return query.addSortBy(r'key', Sort.desc);
     });
   }
+
+  QueryBuilder<FavoritesItem, FavoritesItem, QAfterSortBy> thenByUsedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'usedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FavoritesItem, FavoritesItem, QAfterSortBy> thenByUsedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'usedAt', Sort.desc);
+    });
+  }
 }
 
 extension FavoritesItemQueryWhereDistinct
@@ -1295,6 +1402,12 @@ extension FavoritesItemQueryWhereDistinct
   QueryBuilder<FavoritesItem, FavoritesItem, QDistinct> distinctBySymbols() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'symbols');
+    });
+  }
+
+  QueryBuilder<FavoritesItem, FavoritesItem, QDistinct> distinctByUsedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'usedAt');
     });
   }
 
@@ -1323,6 +1436,12 @@ extension FavoritesItemQueryProperty
       symbolsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'symbols');
+    });
+  }
+
+  QueryBuilder<FavoritesItem, DateTime?, QQueryOperations> usedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'usedAt');
     });
   }
 

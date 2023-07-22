@@ -15,4 +15,6 @@ class FavoritesItem {
 
   @Index(type: IndexType.value, caseSensitive: false)
   List<String> get words => symbols;
+
+  late DateTime? usedAt;
 }

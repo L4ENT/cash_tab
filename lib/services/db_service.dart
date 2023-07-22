@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:cash_tab/isar/collections/currency_rates_collection.dart';
 import 'package:cash_tab/isar/collections/favorites_colection.dart';
+import 'package:cash_tab/routes/favorites/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 
@@ -46,8 +47,27 @@ class FavoritesRepository {
 
   final Isar isar;
 
-  Future<List<FavoritesItem>> all() async {
-    return await isar.collection<FavoritesItem>().where().findAll();
+  Future<List<FavoritesItem>> all(FavoritesSort? sort) async {
+    switch (sort) {
+      case FavoritesSort.az:
+        return await allSortedByAz();
+      case FavoritesSort.recents:
+        return await allSortedByUsedAt();
+      default:
+        return await allSortedByAz();
+    }
+  }
+
+  Future<List<FavoritesItem>> allSortedByUsedAt() async {
+    return await isar
+        .collection<FavoritesItem>()
+        .where()
+        .sortByUsedAtDesc()
+        .findAll();
+  }
+
+  Future<List<FavoritesItem>> allSortedByAz() async {
+    return await isar.collection<FavoritesItem>().where().sortByKey().findAll();
   }
 
   Future<bool> isFavorites(List<String> symbols) async {
@@ -61,17 +81,33 @@ class FavoritesRepository {
 
   Future<void> add(List<String> symbols) async {
     await isar.writeTxn(() async {
-      final favorite = FavoritesItem()..symbols = symbols;
-      debugPrint('Saaaaave');
+      final favorite = FavoritesItem()
+        ..symbols = symbols
+        ..usedAt = DateTime.now();
+      await isar.collection<FavoritesItem>().put(favorite);
+    });
+  }
+
+  Future<void> updatedUsedAt(String key) async {
+    final favorite = await isar.collection<FavoritesItem>().getByKey(key);
+    await isar.writeTxn(() async {
+      favorite!.usedAt = DateTime.now();
       await isar.collection<FavoritesItem>().put(favorite);
     });
   }
 
   Future<void> remove(List<String> symbols) async {
     await isar.writeTxn(() async {
-      debugPrint('Remooove');
       await isar.collection<FavoritesItem>().deleteByKey(symbols.join(''));
     });
+  }
+
+  Future<List<FavoritesItem>> search(String query) async {
+    return await isar
+        .collection<FavoritesItem>()
+        .where()
+        .wordsElementStartsWith(query)
+        .findAll();
   }
 }
 
