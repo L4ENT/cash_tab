@@ -78,10 +78,32 @@ class RatesViewState extends ConsumerState<RatesView> {
     return result;
   }
 
+  String firstColumnFormat(num num) {
+    if (num >= 1000000000) {
+      return '${(num / 1000000000).toStringAsFixed(0)}B';
+    }
+    if (num >= 1000000) {
+      return '${(num / 1000000).toStringAsFixed(0)}M';
+    }
+    if (num >= 1000) {
+      return '${(num / 1000).toStringAsFixed(0)}K';
+    }
+    return num.toStringAsFixed(0);
+  }
+
+  String otherColumnsFormat(num num) {
+    final formatter = NumberFormat('#,##0.00');
+    return formatter
+        .format(num)
+        .toString()
+        .replaceAll(',', ' ')
+        .replaceAll('.', ',');
+  }
+
   @override
   Widget build(BuildContext context) {
     final router = GoRouter.of(context);
-    final formatter = NumberFormat('#,##0.00');
+
     List<String> rates = ref.watch(ratesViewInputListProvider);
     final ratesRatio = ref.watch(ratesRatioProvider);
 
@@ -182,36 +204,35 @@ class RatesViewState extends ConsumerState<RatesView> {
                             ],
                           ),
                           ...generateBanknotes(ratesMap[rates[0]]).map(
-                            (i) => TableRow(
-                              children: [
-                                ...rates.asMap().entries.map(
-                                  (e) {
-                                    return TableCell(
-                                      verticalAlignment:
-                                          TableCellVerticalAlignment.top,
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 16),
-                                        child: Text(
-                                          formatter
-                                              .format(
-                                                i *
-                                                    (ratesMap[rates[0]] /
-                                                        ratesMap[rates[e.key]]),
-                                              )
-                                              .toString()
-                                              .replaceAll(',', ' ')
-                                              .replaceAll('.', ','),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleMedium,
+                            (i) {
+                              return TableRow(
+                                children: [
+                                  ...rates.asMap().entries.map(
+                                    (e) {
+                                      final value = i *
+                                          (ratesMap[rates[0]] /
+                                              ratesMap[rates[e.key]]);
+                                      return TableCell(
+                                        verticalAlignment:
+                                            TableCellVerticalAlignment.top,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 16),
+                                          child: Text(
+                                            e.key == 0
+                                                ? firstColumnFormat(value)
+                                                : otherColumnsFormat(value),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium,
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                )
-                              ],
-                            ),
+                                      );
+                                    },
+                                  )
+                                ],
+                              );
+                            },
                           )
                         ],
                       );
