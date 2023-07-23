@@ -46,7 +46,7 @@ class CurrencyScrapperProvider {
 
     if (record != null) {
       Duration difference = DateTime.now().difference(record.updatedAt);
-      if (difference.inSeconds > 900) {
+      if (difference.inSeconds > 300) {
         final usdPrice =
             symbol != 'USD' ? await scrapper.fetchSymbol(symbol) : 1.0;
         debugPrint('Fetch: $symbol/USD: $usdPrice');
