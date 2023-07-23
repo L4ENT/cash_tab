@@ -38,7 +38,7 @@ class CurrencySearchViewState extends ConsumerState<CurrencySelectView> {
   Widget build(BuildContext context) {
     final router = GoRouter.of(context);
     final symbols = ref.watch(ratesViewSearchResults);
-    final ratesManager = ref.read(ratesManagerProvider);
+    final rm = ref.read(ratesManagerProvider);
 
     return Scaffold(
       appBar: AppBar(),
@@ -67,11 +67,12 @@ class CurrencySearchViewState extends ConsumerState<CurrencySelectView> {
                           children: [
                             Expanded(
                               child: GestureDetector(
-                                onTap: () {
-                                  ratesManager.ratesViewPutSymbol(
+                                onTap: () async {
+                                  rm.ratesViewPutSymbol(
                                     widget.index,
                                     rate.symbol,
                                   );
+                                  await rm.updateLastUsed(rate.symbol);
                                   router.go('/');
                                 },
                                 child: Text(

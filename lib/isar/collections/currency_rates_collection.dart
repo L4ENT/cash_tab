@@ -16,6 +16,8 @@ class RatesCollectionItem {
 
   late DateTime updatedAt;
 
+  late DateTime lastUsedAt;
+
   @Index(type: IndexType.value, caseSensitive: false)
   List<String> get words => [symbol, ...Isar.splitWords(name ?? '')];
 }

@@ -1,0 +1,15 @@
+{
+    "home": "басты бет",
+    "rates": "бағалар",
+    "favorites": "танымал",
+    "account": "тіркеу жазбасы",
+    "settings": "баптаулар",
+    "language": "тіл",
+    "currency_search_placeholder": "атын немесе кодын енгізіңіз",
+    "enter_amount_placeholder": "мөлшерді енгізіңіз",
+    "sort_recents": "жуықтағылар",
+    "sort_az": "әліпби бойынша",
+    "enter_the_value": "мағынаны енгізіңіз",
+    "dark_mode": "қараңғы режим",
+    "appereance": "сыртқы түрі"
+}

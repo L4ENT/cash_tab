@@ -18,28 +18,33 @@ const RatesCollectionItemSchema = CollectionSchema(
   name: r'currency_rates',
   id: -5297317258856645124,
   properties: {
-    r'name': PropertySchema(
+    r'lastUsedAt': PropertySchema(
       id: 0,
+      name: r'lastUsedAt',
+      type: IsarType.dateTime,
+    ),
+    r'name': PropertySchema(
+      id: 1,
       name: r'name',
       type: IsarType.string,
     ),
     r'symbol': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'symbol',
       type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'updatedAt',
       type: IsarType.dateTime,
     ),
     r'usdPrice': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'usdPrice',
       type: IsarType.double,
     ),
     r'words': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'words',
       type: IsarType.stringList,
     )
@@ -114,11 +119,12 @@ void _ratesCollectionItemSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.name);
-  writer.writeString(offsets[1], object.symbol);
-  writer.writeDateTime(offsets[2], object.updatedAt);
-  writer.writeDouble(offsets[3], object.usdPrice);
-  writer.writeStringList(offsets[4], object.words);
+  writer.writeDateTime(offsets[0], object.lastUsedAt);
+  writer.writeString(offsets[1], object.name);
+  writer.writeString(offsets[2], object.symbol);
+  writer.writeDateTime(offsets[3], object.updatedAt);
+  writer.writeDouble(offsets[4], object.usdPrice);
+  writer.writeStringList(offsets[5], object.words);
 }
 
 RatesCollectionItem _ratesCollectionItemDeserialize(
@@ -129,10 +135,11 @@ RatesCollectionItem _ratesCollectionItemDeserialize(
 ) {
   final object = RatesCollectionItem();
   object.id = id;
-  object.name = reader.readStringOrNull(offsets[0]);
-  object.symbol = reader.readString(offsets[1]);
-  object.updatedAt = reader.readDateTime(offsets[2]);
-  object.usdPrice = reader.readDoubleOrNull(offsets[3]);
+  object.lastUsedAt = reader.readDateTime(offsets[0]);
+  object.name = reader.readStringOrNull(offsets[1]);
+  object.symbol = reader.readString(offsets[2]);
+  object.updatedAt = reader.readDateTime(offsets[3]);
+  object.usdPrice = reader.readDoubleOrNull(offsets[4]);
   return object;
 }
 
@@ -144,14 +151,16 @@ P _ratesCollectionItemDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset)) as P;
-    case 1:
-      return (reader.readString(offset)) as P;
-    case 2:
       return (reader.readDateTime(offset)) as P;
+    case 1:
+      return (reader.readStringOrNull(offset)) as P;
+    case 2:
+      return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 4:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 5:
       return (reader.readStringList(offset) ?? []) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -552,6 +561,62 @@ extension RatesCollectionItemQueryFilter on QueryBuilder<RatesCollectionItem,
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<RatesCollectionItem, RatesCollectionItem, QAfterFilterCondition>
+      lastUsedAtEqualTo(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastUsedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RatesCollectionItem, RatesCollectionItem, QAfterFilterCondition>
+      lastUsedAtGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastUsedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RatesCollectionItem, RatesCollectionItem, QAfterFilterCondition>
+      lastUsedAtLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastUsedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<RatesCollectionItem, RatesCollectionItem, QAfterFilterCondition>
+      lastUsedAtBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastUsedAt',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1225,6 +1290,20 @@ extension RatesCollectionItemQueryLinks on QueryBuilder<RatesCollectionItem,
 extension RatesCollectionItemQuerySortBy
     on QueryBuilder<RatesCollectionItem, RatesCollectionItem, QSortBy> {
   QueryBuilder<RatesCollectionItem, RatesCollectionItem, QAfterSortBy>
+      sortByLastUsedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastUsedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<RatesCollectionItem, RatesCollectionItem, QAfterSortBy>
+      sortByLastUsedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastUsedAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<RatesCollectionItem, RatesCollectionItem, QAfterSortBy>
       sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1298,6 +1377,20 @@ extension RatesCollectionItemQuerySortThenBy
   }
 
   QueryBuilder<RatesCollectionItem, RatesCollectionItem, QAfterSortBy>
+      thenByLastUsedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastUsedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<RatesCollectionItem, RatesCollectionItem, QAfterSortBy>
+      thenByLastUsedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastUsedAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<RatesCollectionItem, RatesCollectionItem, QAfterSortBy>
       thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1357,6 +1450,13 @@ extension RatesCollectionItemQuerySortThenBy
 extension RatesCollectionItemQueryWhereDistinct
     on QueryBuilder<RatesCollectionItem, RatesCollectionItem, QDistinct> {
   QueryBuilder<RatesCollectionItem, RatesCollectionItem, QDistinct>
+      distinctByLastUsedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastUsedAt');
+    });
+  }
+
+  QueryBuilder<RatesCollectionItem, RatesCollectionItem, QDistinct>
       distinctByName({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
@@ -1397,6 +1497,13 @@ extension RatesCollectionItemQueryProperty
   QueryBuilder<RatesCollectionItem, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<RatesCollectionItem, DateTime, QQueryOperations>
+      lastUsedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastUsedAt');
     });
   }
 

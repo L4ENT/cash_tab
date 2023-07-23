@@ -37,6 +37,11 @@ class RatesManager {
     final notifier = ref.read(ratesViewInputListProvider.notifier);
     notifier.replace(symbol, index);
   }
+
+  Future<void> updateLastUsed(String symbol) async {
+    final db = await ref.watch(dbServiceProvider.future);
+    await db.ratesRepository.updateLastUsed(symbol, DateTime.now());
+  }
 }
 
 final ratesManagerProvider = Provider((ref) => RatesManager(ref));

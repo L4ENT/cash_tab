@@ -1,0 +1,15 @@
+{
+    "home": "accueil",
+    "rates": "taux",
+    "favorites": "favoris",
+    "account": "compte",
+    "settings": "paramètres",
+    "language": "langue",
+    "currency_search_placeholder": "entrez le nom ou le code",
+    "enter_amount_placeholder": "entrez la quantité",
+    "sort_recents": "récents",
+    "sort_az": "par ordre alphabétique",
+    "enter_the_value": "entrez la valeur",
+    "dark_mode": "mode sombre",
+    "appereance": "apparence"
+}

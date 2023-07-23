@@ -17,12 +17,37 @@ class RatesRepository extends SubService {
     return allRates;
   }
 
+  Future<void> update(String symbol, double usdPrice) async {
+    final obj = await getBySymbol(symbol);
+    if (obj != null) {
+      await isar.writeTxn(() async {
+        obj
+          ..usdPrice = usdPrice
+          ..updatedAt = DateTime.now();
+        await isar.collection<RatesCollectionItem>().put(obj);
+      });
+    }
+  }
+
+  Future<void> updateLastUsed(String symbol, DateTime dt) async {
+    final obj = await getBySymbol(symbol);
+    if (obj != null) {
+      await isar.writeTxn(() async {
+        obj.lastUsedAt = dt;
+        await isar.collection<RatesCollectionItem>().put(obj);
+      });
+    }
+  }
+
   Future<List<RatesCollectionItem>> search(String prompt) async {
     final query = isar.collection<RatesCollectionItem>().where();
     if (prompt.length > 2) {
-      return query.wordsElementStartsWith(prompt).sortByName().findAll();
+      return query
+          .wordsElementStartsWith(prompt)
+          .sortByLastUsedAtDesc()
+          .findAll();
     } else {
-      return query.sortByName().findAll();
+      return query.sortByLastUsedAtDesc().findAll();
     }
   }
 

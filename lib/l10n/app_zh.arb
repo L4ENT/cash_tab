@@ -1,0 +1,15 @@
+{
+    "home": "首页",
+    "rates": "汇率",
+    "favorites": "收藏夹",
+    "account": "帐户",
+    "settings": "设置",
+    "language": "语言",
+    "currency_search_placeholder": "请输入名称或代码",
+    "enter_amount_placeholder": "请输入数量",
+    "sort_recents": "最新的",
+    "sort_az": "按字母顺序",
+    "enter_the_value": "请输入值",
+    "dark_mode": "暗黑模式",
+    "appereance": "外观"
+}

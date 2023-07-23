@@ -1,0 +1,15 @@
+{
+    "home": "ホーム",
+    "rates": "レート",
+    "favorites": "お気に入り",
+    "account": "アカウント",
+    "settings": "設定",
+    "language": "言語",
+    "currency_search_placeholder": "名称またはコードを入力してください",
+    "enter_amount_placeholder": "数量を入力してください",
+    "sort_recents": "最近",
+    "sort_az": "アルファベット順",
+    "enter_the_value": "値を入力してください",
+    "dark_mode": "ダークモード",
+    "appereance": "表示設定"
+}

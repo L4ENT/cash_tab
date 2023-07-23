@@ -1,4 +1,5 @@
 import 'package:cash_tab/providers/db_provider.dart';
+import 'package:cash_tab/services/currency_scraper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RatesInputsListNotifier extends StateNotifier<List<String>> {
@@ -89,6 +90,8 @@ final ratesInputsEditProvider = Provider((ref) {
 
 final ratesRatioProvider = FutureProvider((ref) async {
   final symbols = ref.watch(ratesViewInputListProvider);
+  final scrapper = ref.read(currencySrapperProvider);
+  Future.wait(symbols.map((e) => scrapper.updateSymbol(e)));
   final db = await ref.read(dbServiceProvider.future);
   final rates = await db.ratesRepository.getBySymbolsList(symbols);
   final ratesMap = {};
