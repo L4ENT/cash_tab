@@ -90,9 +90,9 @@ Future<void> seedRatesCollection(Isar isar) async {
     {'symbol': 'OMR', 'usdPrice': 2.60, 'name': 'Omani Rial'}
   ];
 
-  await isar.writeTxn(() async {
-    await isar.collection<RatesCollectionItem>().clear();
-  });
+  // await isar.writeTxn(() async {
+  //   await isar.collection<RatesCollectionItem>().clear();
+  // });
 
   final ratesCount = await isar.collection<RatesCollectionItem>().count();
 
