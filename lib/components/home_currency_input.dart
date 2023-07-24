@@ -54,33 +54,18 @@ class HomeCurrencyInputState extends ConsumerState<HomeCurrencyInputWidget> {
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.allow(RegExp(r"[0-9.]"))
             ],
-            decoration: InputDecoration(
-              hintText: l10n.enter_amount_placeholder.capitalize(),
-              suffixIcon: GestureDetector(
-                onTap: () => {
-                  router.push('/currency/select/${widget.index}'),
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        widget.currency,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.arrow_drop_down),
-                    ],
-                  ),
-                ),
-              ),
-            ),
             keyboardType: const TextInputType.numberWithOptions(
               decimal: true,
             ),
           ),
+        ),
+        const SizedBox(width: 16),
+        TextButton.icon(
+          onPressed: () => {
+            router.push('/currency/select/${widget.index}'),
+          },
+          icon: const Icon(Icons.arrow_drop_down),
+          label: Text(widget.currency),
         ),
         if (widget.index > 1)
           Row(

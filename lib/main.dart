@@ -12,10 +12,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 var uuidLib = const Uuid();
 
 void main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // final isar = await isarOpen();
-  // await seedRatesCollection(isar);
-  // await cleanSeed(isar);
   runApp(const ProviderScope(child: MyApp()));
 }
 
