@@ -113,8 +113,8 @@ Future<void> seedRatesCollection(Isar isar) async {
           ..symbol = rateObject['symbol'].toString()
           ..name = rateObject['name'].toString()
           ..usdPrice = double.parse(rateObject['usdPrice'].toString())
-          ..updatedAt = DateTime.now()
-          ..lastUsedAt = DateTime.now();
+          ..updatedAt = DateTime.parse("2023-07-20 00:00:00")
+          ..lastUsedAt = DateTime.parse("2023-07-20 00:00:00");
         await isar.collection<RatesCollectionItem>().put(tag);
       }
     }

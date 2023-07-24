@@ -1,4 +1,5 @@
 import 'package:cash_tab/routes/settings/appereance_view.dart';
+import 'package:cash_tab/routes/splash/index_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -16,8 +17,15 @@ final GlobalKey<NavigatorState> _shellNavigatorKey =
 
 final GoRouter routerConfig = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: '/',
+  initialLocation: '/splash',
   routes: <RouteBase>[
+    GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
+      path: '/splash',
+      builder: (BuildContext context, GoRouterState state) {
+        return const SplashView();
+      },
+    ),
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
       pageBuilder: (context, state, child) {

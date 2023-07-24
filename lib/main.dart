@@ -1,8 +1,5 @@
-import 'package:cash_tab/isar/shortcuts.dart';
-import 'package:cash_tab/providers/db_provider.dart';
 import 'package:cash_tab/providers/settings_providers.dart';
 import 'package:cash_tab/routes/router.dart';
-import 'package:cash_tab/seed/currency_rates_seed.dart';
 import 'package:cash_tab/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,8 +25,6 @@ class MyAppState extends ConsumerState<MyApp> {
     final languageNotifier = ref.read(languageProvider.notifier);
     Future.delayed(Duration.zero, () async {
       await languageNotifier.init();
-      final isar = await ref.read(isarProvider.future);
-      await seedRatesCollection(isar);
     });
     super.initState();
   }
