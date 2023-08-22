@@ -42,6 +42,7 @@ class MyAppState extends ConsumerState<MyApp> {
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

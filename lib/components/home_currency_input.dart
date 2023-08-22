@@ -6,6 +6,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+class CustomNumberTextInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final intSelectionIndex = newValue.selection.end;
+    String formattedText = formatNumberWithSpaces(newValue.text);
+    return TextEditingValue(
+      text: formattedText,
+      selection: TextSelection.collapsed(
+          offset: intSelectionIndex +
+              (formattedText.length - newValue.text.length)),
+    );
+  }
+}
+
 class HomeCurrencyInputWidget extends ConsumerStatefulWidget {
   const HomeCurrencyInputWidget({
     super.key,
@@ -36,7 +51,7 @@ class HomeCurrencyInputState extends ConsumerState<HomeCurrencyInputWidget> {
 
     final value = ref.watch(rateViewInputFamily(widget.currency));
     final inputsManager = ref.watch(ratesInputsEditProvider);
-    textController.text = value.toString();
+    textController.text = formatNumberWithSpaces(value.toString());
 
     final ratesListNotifier = ref.watch(ratesViewInputListProvider.notifier);
 
@@ -47,12 +62,13 @@ class HomeCurrencyInputState extends ConsumerState<HomeCurrencyInputWidget> {
             controller: textController,
             onChanged: (value) {
               try {
-                final doubleValue = double.parse(value);
+                final doubleValue = double.parse(value.replaceAll(' ', ''));
                 inputsManager.onInputChange(widget.currency, doubleValue);
               } catch (e) {}
             },
             inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.allow(RegExp(r"[0-9.]"))
+              FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
+              CustomNumberTextInputFormatter()
             ],
             keyboardType: const TextInputType.numberWithOptions(
               decimal: true,

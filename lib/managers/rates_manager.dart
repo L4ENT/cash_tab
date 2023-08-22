@@ -16,7 +16,14 @@ class RatesManager {
   }
 
   setUpRatesView(List<String> symbols) {
-    final ratesNotifier = ref.watch(ratesViewInputListProvider.notifier);
+    final currentSymbols = ref.read(ratesViewInputListProvider);
+
+    for (var symbol in currentSymbols) {
+      final inputProvider = ref.read(rateViewInputFamily(symbol).notifier);
+      inputProvider.state = 0;
+    }
+
+    final ratesNotifier = ref.read(ratesViewInputListProvider.notifier);
     ratesNotifier.setUp(symbols);
   }
 
@@ -34,6 +41,13 @@ class RatesManager {
   }
 
   ratesViewPutSymbol(int index, String symbol) {
+    final currentSymbols = ref.read(ratesViewInputListProvider);
+
+    for (var symbol in currentSymbols) {
+      final inputProvider = ref.read(rateViewInputFamily(symbol).notifier);
+      inputProvider.state = 0;
+    }
+
     final notifier = ref.read(ratesViewInputListProvider.notifier);
     notifier.replace(symbol, index);
   }
