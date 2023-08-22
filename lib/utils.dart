@@ -40,3 +40,15 @@ String formatNumberWithSpaces(String text) {
     return formattedWhole;
   }
 }
+
+double safeParseDouble(String? input) {
+  if (input == null) return 0.0;
+
+  String cleanedInput = input.replaceAll(' ', '');
+
+  try {
+    return double.parse(cleanedInput);
+  } catch (e) {
+    return 0.0;
+  }
+}

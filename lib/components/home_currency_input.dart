@@ -37,10 +37,31 @@ class HomeCurrencyInputWidget extends ConsumerStatefulWidget {
 
 class HomeCurrencyInputState extends ConsumerState<HomeCurrencyInputWidget> {
   TextEditingController textController = TextEditingController();
+  late FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        final value = safeParseDouble(textController.text);
+        if (value == 0) {
+          textController.text = '';
+        }
+      } else {
+        final value = safeParseDouble(textController.text);
+        if (value == 0) {
+          textController.text = '0.0';
+        }
+      }
+    });
+  }
 
   @override
   void dispose() {
     textController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -60,6 +81,7 @@ class HomeCurrencyInputState extends ConsumerState<HomeCurrencyInputWidget> {
         Expanded(
           child: TextField(
             controller: textController,
+            focusNode: _focusNode,
             onChanged: (value) {
               try {
                 final doubleValue = double.parse(value.replaceAll(' ', ''));
