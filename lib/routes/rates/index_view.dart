@@ -112,6 +112,8 @@ class RatesViewState extends ConsumerState<RatesView> {
 
     final ratesManager = ref.read(ratesManagerProvider);
 
+    final scraperLoading = ref.watch(scrapperLoadingProvider);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
@@ -170,75 +172,101 @@ class RatesViewState extends ConsumerState<RatesView> {
                   ],
                 ),
               ),
-              Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 16,
+              if (scraperLoading != null)
+                Material(
+                  elevation: 8.0,
+                  color: Colors.transparent,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0, vertical: 12.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(
+                          width: 15.0,
+                          height: 15.0,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 1,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Text('Loading $scraperLoading from internet'),
+                      ],
+                    ),
                   ),
-                  child: ratesRatio.when(
-                    loading: () => const CircularProgressIndicator(),
-                    error: (err, stack) => Text('Error: $err'),
-                    data: (ratesMap) {
-                      return Table(
-                        children: [
-                          TableRow(
-                            children: [
-                              ...rates.map(
-                                (el) => TableCell(
-                                  verticalAlignment:
-                                      TableCellVerticalAlignment.top,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 16),
-                                    child: Text(
-                                      el,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium!
-                                          .copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
+                ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                child: ratesRatio.when(
+                  loading: () => const CircularProgressIndicator(),
+                  error: (err, stack) => Text('Error: $err'),
+                  data: (ratesMap) {
+                    return Table(
+                      children: [
+                        TableRow(
+                          children: [
+                            ...rates.map(
+                              (el) => TableCell(
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.top,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 16),
+                                  child: Text(
+                                    el,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
-                          ...generateBanknotes(ratesMap[rates[0]]).map(
-                            (i) {
-                              return TableRow(
-                                children: [
-                                  ...rates.asMap().entries.map(
-                                    (e) {
-                                      final value = i *
-                                          (ratesMap[rates[0]] /
-                                              ratesMap[rates[e.key]]);
-                                      return TableCell(
-                                        verticalAlignment:
-                                            TableCellVerticalAlignment.top,
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 16),
-                                          child: Text(
-                                            e.key == 0
-                                                ? firstColumnFormat(value)
-                                                : otherColumnsFormat(value),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium,
-                                          ),
+                              ),
+                            )
+                          ],
+                        ),
+                        ...generateBanknotes(ratesMap[rates[0]]).map(
+                          (i) {
+                            return TableRow(
+                              children: [
+                                ...rates.asMap().entries.map(
+                                  (e) {
+                                    final value = i *
+                                        (ratesMap[rates[0]] /
+                                            ratesMap[rates[e.key]]);
+                                    return TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.top,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 16),
+                                        child: Text(
+                                          e.key == 0
+                                              ? firstColumnFormat(value)
+                                              : otherColumnsFormat(value),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium,
                                         ),
-                                      );
-                                    },
-                                  )
-                                ],
-                              );
-                            },
-                          )
-                        ],
-                      );
-                    },
-                  )),
-              // Add more widgets as needed
+                                      ),
+                                    );
+                                  },
+                                )
+                              ],
+                            );
+                          },
+                        )
+                      ],
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),

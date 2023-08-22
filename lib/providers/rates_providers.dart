@@ -120,3 +120,7 @@ final inFavoritesDbProvider = FutureProvider((ref) async {
   final db = await ref.read(dbServiceProvider.future);
   return await db.favoritesRepository.isFavorites(symbols);
 });
+
+final scrapperLoadingProvider = StateProvider<String?>((ref) {
+  return null;
+});

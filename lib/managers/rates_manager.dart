@@ -2,6 +2,7 @@ import 'package:cash_tab/providers/db_provider.dart';
 import 'package:cash_tab/providers/rates_providers.dart';
 import 'package:cash_tab/providers/rates_view_search_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RatesManager {
   RatesManager(this.ref);
@@ -25,6 +26,7 @@ class RatesManager {
 
     final ratesNotifier = ref.read(ratesViewInputListProvider.notifier);
     ratesNotifier.setUp(symbols);
+    settingsSave();
   }
 
   Future<void> ratesViewAddToFavorites() async {
@@ -50,11 +52,24 @@ class RatesManager {
 
     final notifier = ref.read(ratesViewInputListProvider.notifier);
     notifier.replace(symbol, index);
+    settingsSave();
   }
 
   Future<void> updateLastUsed(String symbol) async {
-    final db = await ref.watch(dbServiceProvider.future);
+    final db = await ref.read(dbServiceProvider.future);
     await db.ratesRepository.updateLastUsed(symbol, DateTime.now());
+  }
+
+  Future<void> settingsSave() async {
+    final symbols = ref.read(ratesViewInputListProvider);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('home_symbols', symbols);
+  }
+
+  Future<void> settingsLoad() async {
+    final prefs = await SharedPreferences.getInstance();
+    final symbols = prefs.getStringList('home_symbols') ?? ['USD', 'EUR'];
+    setUpRatesView(symbols);
   }
 }
 

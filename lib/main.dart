@@ -1,3 +1,4 @@
+import 'package:cash_tab/managers/rates_manager.dart';
 import 'package:cash_tab/providers/settings_providers.dart';
 import 'package:cash_tab/routes/router.dart';
 import 'package:cash_tab/themes.dart';
@@ -23,8 +24,10 @@ class MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     final languageNotifier = ref.read(languageProvider.notifier);
+    final homeProvider = ref.read(ratesManagerProvider);
     Future.delayed(Duration.zero, () async {
       await languageNotifier.init();
+      await homeProvider.settingsLoad();
     });
     super.initState();
   }

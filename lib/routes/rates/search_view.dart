@@ -1,6 +1,7 @@
 import 'package:cash_tab/components/curreny_select_input.dart';
 import 'package:cash_tab/managers/rates_manager.dart';
 import 'package:cash_tab/providers/db_provider.dart';
+import 'package:cash_tab/providers/rates_providers.dart';
 import 'package:cash_tab/utils.dart';
 import 'package:cash_tab/providers/rates_view_search_providers.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,7 @@ class CurrencySearchViewState extends ConsumerState<CurrencySelectView> {
     final router = GoRouter.of(context);
     final symbols = ref.watch(ratesViewSearchResults);
     final rm = ref.read(ratesManagerProvider);
+    final inputsSymbols = ref.read(ratesViewInputListProvider);
 
     return Scaffold(
       appBar: AppBar(),
@@ -60,31 +62,41 @@ class CurrencySearchViewState extends ConsumerState<CurrencySelectView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ...symbols.map(
-                      (rate) => Padding(
+                    ...symbols.map((rate) {
+                      final isInInputList = inputsSymbols.contains(rate.symbol);
+                      return Padding(
                         padding: const EdgeInsets.only(bottom: 24),
                         child: Row(
                           children: [
                             Expanded(
                               child: GestureDetector(
                                 onTap: () async {
-                                  rm.ratesViewPutSymbol(
-                                    widget.index,
-                                    rate.symbol,
-                                  );
-                                  await rm.updateLastUsed(rate.symbol);
-                                  router.go('/');
+                                  if (!isInInputList) {
+                                    rm.ratesViewPutSymbol(
+                                      widget.index,
+                                      rate.symbol,
+                                    );
+                                    await rm.updateLastUsed(rate.symbol);
+                                    router.go('/');
+                                  }
                                 },
                                 child: Text(
                                   '${rate.symbol.toUpperCase()} - ${rate.name?.capitalize()}',
-                                  style: Theme.of(context).textTheme.titleLarge,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(
+                                        color: isInInputList
+                                            ? Colors.grey.shade400
+                                            : Colors.white,
+                                      ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    )
+                      );
+                    })
                   ],
                 ),
               ),
